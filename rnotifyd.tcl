@@ -15,7 +15,7 @@ if {[info exists rnotifyd-sound]} {
 if {[info exists rnotifyd-canberra] && [info exists rnotifyd-sound]} {
  set canberra [format "|%s" [format $::rnotifyd-canberra $::sound]]
 } elseif {$sound != ""} {
- set canberra [format "|%s" [format "|ffmpeg -i %s -f pulse default -loglevel error" $sound]]
+ set canberra [format "|%s" [format "ffmpeg -i %s -f pulse default -loglevel error" $sound]]
 }
 
 
@@ -58,11 +58,11 @@ proc rn:rd {sock} {
    notify send [binary decode base64 [lindex $argv 1]] [binary decode base64 [lindex $argv 2]] $::iconname $::timeout
    if {$::canberra != ""} {
     if {$procsock == ""} {
-     set procsock [open "|ffmpeg -i $::sound -f oss /dev/dsp -loglevel error" r]; fileevent $procsock readable [list rn:closeprocess $procsock]
+     set procsock [open $::canberra r]; fileevent $procsock readable [list rn:closeprocess $procsock]
      return
     }
     if {[eof $procsock]} {
-     set procsock [open "|ffmpeg -i $::sound -f oss /dev/dsp -loglevel error" r]; fileevent $procsock readable [list rn:closeprocess $procsock]
+     set procsock [open $::canberra r]; fileevent $procsock readable [list rn:closeprocess $procsock]
      return
     }
     return
