@@ -6,36 +6,36 @@ set timeout 10500
 set sound ""
 set canberra ""
 
-if {[info exists rnotifyd-sound]} {
- set sound $::rnotifyd-sound
+if {[info exists rnotifyd_sound]} {
+ set sound $::rnotifyd_sound
 } elseif {[llength $::argv] > 0} {
  set sound [lindex $::argv 0]
 }
 
-if {[info exists rnotifyd-canberra] && [info exists rnotifyd-sound]} {
- set canberra [format "|%s" [format $::rnotifyd-canberra $::sound]]
+if {[info exists rnotifyd_canberra] && $::sound != ""} {
+ set canberra [format "|%s" [format $::rnotifyd_canberra $::sound]]
 } elseif {$sound != ""} {
  set canberra [format "|%s" [format "ffmpeg -i %s -f pulse default -loglevel error" $sound]]
 }
 
 
-if {[info exists rnotifyd-iconname]} {
- set iconname $::rnotifyd-iconname
+if {[info exists rnotifyd_iconname]} {
+ set iconname $::rnotifyd_iconname
 }
 
-if {[info exists rnotifyd-expiry]} {
- set timeout $::rnotifyd-expiry
+if {[info exists rnotifyd_expiry]} {
+ set timeout $::rnotifyd_expiry
 }
 
-if {[info exists rnotifyd-bindaddr]} {
- set bindaddr $rnotifyd-bindaddr
+if {[info exists rnotifyd_bindaddr]} {
+ set bindaddr $rnotifyd_bindaddr
 } else {
  set bindaddr 127.0.0.1
 }
 
 
-if {[info exists rnotifyd-port]} {
- set port $rnotifyd-port
+if {[info exists rnotifyd_port]} {
+ set port $rnotifyd_port
 } else {
  set port 51001
 }
@@ -56,6 +56,7 @@ proc rn:rd {sock} {
   }
   if {[string tolower [lindex $argv 0]] == "b"} {
    notify send [binary decode base64 [lindex $argv 1]] [binary decode base64 [lindex $argv 2]] $::iconname $::timeout
+   puts stdout [format "%s %s %s %s %s" [binary decode base64 [lindex $argv 1]] [binary decode base64 [lindex $argv 2]] $::iconname $::timeout $::canberra]
    if {$::canberra != ""} {
     if {$procsock == ""} {
      set procsock [open $::canberra r]; fileevent $procsock readable [list rn:closeprocess $procsock]
@@ -73,6 +74,7 @@ proc rn:rd {sock} {
 
 proc rn:closeprocess {proc} {
  global procsock
+ puts stdout [gets $proc]
  close $proc
  set procsock ""
 }

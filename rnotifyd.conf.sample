@@ -1,13 +1,13 @@
 # listen port
-set rnotifyd-port 51001
+set rnotifyd_port 51001
 #bind address
-set rnotifyd-bindaddr 127.0.0.1
+set rnotifyd_bindaddr 127.0.0.1
 # icon name (weechat is default because rnotifyd was made for a weechat script)
-set rnotifyd-iconname weechat
+set rnotifyd_iconname weechat
 # expiry (default 10½sec)
-set rnotifyd-expiry 10500
+set rnotifyd_expiry 10500
 # sound file, takes precedence over comd line
-set rnotifyd-sound "synthchime.ogg"
+set rnotifyd_sound "synthchime.ogg"
 # command to run to play sound (ffmpeg on freebsd)
-set rnotifyd-canberra "ffmpeg -i %s -f oss /dev/dsp"
+set rnotifyd_canberra "ffmpeg -i %s -f oss /dev/dsp"
 # Change to "ffmpeg -i %s -f pulse default" if using pulseaudio (default on Linux)
