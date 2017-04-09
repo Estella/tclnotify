@@ -56,10 +56,10 @@ proc rn:rd {sock} {
   }
   if {[string tolower [lindex $argv 0]] == "b"} {
    notify send [binary decode base64 [lindex $argv 1]] [binary decode base64 [lindex $argv 2]] $::iconname $::timeout
-   puts stdout [format "%s %s %s %s %s" [binary decode base64 [lindex $argv 1]] [binary decode base64 [lindex $argv 2]] $::iconname $::timeout $::canberra]
    if {$::canberra != ""} {
     if {$procsock == ""} {
      set procsock [open $::canberra r]; fileevent $procsock readable [list rn:closeprocess $procsock]
+     chan configure $procsock -blocking 0 -buffering line
      return
     }
     if {[eof $procsock]} {
@@ -74,7 +74,6 @@ proc rn:rd {sock} {
 
 proc rn:closeprocess {proc} {
  global procsock
- puts stdout [gets $proc]
  close $proc
  set procsock ""
 }
